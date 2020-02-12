@@ -1,6 +1,7 @@
 package com.ljy;
 
 import com.ljy.dbObject.DBTable;
+import com.ljy.pojo.GeneratorConfig;
 import com.ljy.writer.CrudControllerWriter;
 import com.ljy.writer.EntityMapperWriter;
 import com.ljy.writer.MyBatisXMLWriter;
@@ -21,23 +22,25 @@ import java.util.StringTokenizer;
 public class GeneratorController {
 
     private DatabaseMetaData dbMetaData;
+
+    private GeneratorConfig config;
+
     private String fullyQualifiedEntityPackage;
     private String fullyQualifiedMapperPackage;
-
-    private String driverClass;
-    private String connectionURL;
-    private String userId;
-    private String password;
 
     private void readGeneratorConfig(String path) throws DocumentException {
         Document document = new SAXReader().read(new File(path));
 
+        config = new GeneratorConfig();
+
         Element context = document.getRootElement().element("context");
         Element jdbcConnection = context.element("jdbcConnection");
-        this.driverClass  = jdbcConnection.attributeValue("driverClass");
-        this.connectionURL = jdbcConnection.attributeValue("connectionURL");
-        this.userId = jdbcConnection.attributeValue("userId");
-        this.password = jdbcConnection.attributeValue("password");
+
+        config.getJdbcConnection().setDriverClass(jdbcConnection.attributeValue("driverClass"));
+        config.getJdbcConnection().setConnectionURL(jdbcConnection.attributeValue("connectionURL"));
+        config.getJdbcConnection().setUserId(jdbcConnection.attributeValue("userId"));
+        config.getJdbcConnection().setPassword(jdbcConnection.attributeValue("password"));
+
 
     }
 
@@ -50,8 +53,8 @@ public class GeneratorController {
 
         try {
             if (dbMetaData == null) {
-                Class.forName(driverClass);
-                Connection con = DriverManager.getConnection(connectionURL, userId, password);
+                Class.forName(config.getJdbcConnection().getDriverClass());
+                Connection con = DriverManager.getConnection(config.getJdbcConnection().getConnectionURL(), config.getJdbcConnection().getUserId(), config.getJdbcConnection().getPassword());
                 dbMetaData = con.getMetaData();
             }
         } catch (ClassNotFoundException e) {
@@ -137,36 +140,5 @@ public class GeneratorController {
         this.fullyQualifiedMapperPackage = fullyQualifiedMapperPackage;
     }
 
-    public String getDriverClass() {
-        return driverClass;
-    }
-
-    public void setDriverClass(String driverClass) {
-        this.driverClass = driverClass;
-    }
-
-    public String getConnectionURL() {
-        return connectionURL;
-    }
-
-    public void setConnectionURL(String connectionURL) {
-        this.connectionURL = connectionURL;
-    }
-
-    public String getUserId() {
-        return userId;
-    }
-
-    public void setUserId(String userId) {
-        this.userId = userId;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
 }
 

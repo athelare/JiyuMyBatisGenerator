@@ -8,6 +8,17 @@ import java.util.List;
 public class GeneratorConfig {
 
     private List<SpecifiedTable> specifiedTables;
+    private JDBCConnection jdbcConnection;
+    private JavaClientGenerator javaClientGenerator;
+    private JavaModelGenerator javaModelGenerator;
+    private SQLMapGenerator sqlMapGenerator;
+
+    public GeneratorConfig(){
+        jdbcConnection = new JDBCConnection();
+        javaClientGenerator = new JavaClientGenerator();
+        javaModelGenerator = new JavaModelGenerator();
+        sqlMapGenerator = new SQLMapGenerator();
+    }
 
     public List<SpecifiedTable> getSpecifiedTables() {
         return specifiedTables;
@@ -17,106 +28,37 @@ public class GeneratorConfig {
         this.specifiedTables = specifiedTables;
     }
 
-    static class jdbcConnection{
-        private String driverClass;
-        private String connectionURL;
-        private String userId;
-        private String password;
-
-        public String getDriverClass() {
-            return driverClass;
-        }
-
-        public void setDriverClass(String driverClass) {
-            this.driverClass = driverClass;
-        }
-
-        public String getConnectionURL() {
-            return connectionURL;
-        }
-
-        public void setConnectionURL(String connectionURL) {
-            this.connectionURL = connectionURL;
-        }
-
-        public String getUserId() {
-            return userId;
-        }
-
-        public void setUserId(String userId) {
-            this.userId = userId;
-        }
-
-        public String getPassword() {
-            return password;
-        }
-
-        public void setPassword(String password) {
-            this.password = password;
-        }
+    public JDBCConnection getJdbcConnection() {
+        return jdbcConnection;
     }
 
-    static class javaModelGenerator{
-        private String targetPackage;
-        private String targetProject;
-
-        public String getTargetPackage() {
-            return targetPackage;
-        }
-
-        public void setTargetPackage(String targetPackage) {
-            this.targetPackage = targetPackage;
-        }
-
-        public String getTargetProject() {
-            return targetProject;
-        }
-
-        public void setTargetProject(String targetProject) {
-            this.targetProject = targetProject;
-        }
+    public void setJdbcConnection(JDBCConnection jdbcConnection) {
+        this.jdbcConnection = jdbcConnection;
     }
 
-    static class sqlMapGenerator{
-        private String targetPackage;
-        private String targetProject;
-
-        public String getTargetPackage() {
-            return targetPackage;
-        }
-
-        public void setTargetPackage(String targetPackage) {
-            this.targetPackage = targetPackage;
-        }
-
-        public String getTargetProject() {
-            return targetProject;
-        }
-
-        public void setTargetProject(String targetProject) {
-            this.targetProject = targetProject;
-        }
+    public JavaClientGenerator getJavaClientGenerator() {
+        return javaClientGenerator;
     }
 
-    static class javaClientGenerator{
-        private String targetPackage;
-        private String targetProject;
-
-        public String getTargetPackage() {
-            return targetPackage;
-        }
-
-        public void setTargetPackage(String targetPackage) {
-            this.targetPackage = targetPackage;
-        }
-
-        public String getTargetProject() {
-            return targetProject;
-        }
-
-        public void setTargetProject(String targetProject) {
-            this.targetProject = targetProject;
-        }
+    public void setJavaClientGenerator(JavaClientGenerator javaClientGenerator) {
+        this.javaClientGenerator = javaClientGenerator;
     }
 
+    public JavaModelGenerator getJavaModelGenerator() {
+        return javaModelGenerator;
+    }
+
+    public void setJavaModelGenerator(JavaModelGenerator javaModelGenerator) {
+        this.javaModelGenerator = javaModelGenerator;
+    }
+
+    public SQLMapGenerator getSqlMapGenerator() {
+        return sqlMapGenerator;
+    }
+
+    public void setSqlMapGenerator(SQLMapGenerator sqlMapGenerator) {
+        this.sqlMapGenerator = sqlMapGenerator;
+    }
 }
+
+

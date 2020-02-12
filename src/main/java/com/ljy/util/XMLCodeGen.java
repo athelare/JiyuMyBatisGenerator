@@ -108,7 +108,7 @@ public class XMLCodeGen {
                 "    <where>\n");
         for(DBColumn column:dbTable.getColumns()){
             sb.append("      <if test=\""+column.getCamelName()+" != null\" >\n");
-            sb.append("        "+column.getColumnName()+" = #{"+column.getCamelName()+",jdbcType="+column.getJdbcTypeName()+"}\n");
+            sb.append("        AND "+column.getColumnName()+" = #{"+column.getCamelName()+",jdbcType="+column.getJdbcTypeName()+"}\n");
             sb.append("      </if>\n");
         }
         sb.append("    </where>\n  ");

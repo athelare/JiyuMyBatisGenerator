@@ -35,31 +35,33 @@ public class GeneratorController {
 
         Element context = document.getRootElement().element("context");
         Element jdbcConnection = context.element("jdbcConnection");
+        Element javaModelGenerator = context.element("javaModelGenerator");
+        Element javaClientGenerator = context.element("javaClientGenerator");
+        Element sqlMapGenerator = context.element("sqlMapGenerator");
 
         config.getJdbcConnection().setDriverClass(jdbcConnection.attributeValue("driverClass"));
         config.getJdbcConnection().setConnectionURL(jdbcConnection.attributeValue("connectionURL"));
         config.getJdbcConnection().setUserId(jdbcConnection.attributeValue("userId"));
         config.getJdbcConnection().setPassword(jdbcConnection.attributeValue("password"));
 
+        config.getJavaModelGenerator().setTargetPackage(javaModelGenerator.attributeValue("targetPackage"));
+        config.getJavaModelGenerator().setTargetProject(javaModelGenerator.attributeValue("targetProject"));
+
+        config.getJavaClientGenerator().setTargetPackage(javaClientGenerator.attributeValue("targetPackage"));
+        config.getJavaClientGenerator().setTargetProject(javaClientGenerator.attributeValue("targetProject"));
+
+        config.getSqlMapGenerator().setTargetPackage(sqlMapGenerator.attributeValue("targetPackage"));
+        config.getSqlMapGenerator().setTargetProject(sqlMapGenerator.attributeValue("targetProject"));
 
     }
 
     private void getDatabaseMetaData(){
 
-
-
-
-
-
         try {
-            if (dbMetaData == null) {
-                Class.forName(config.getJdbcConnection().getDriverClass());
-                Connection con = DriverManager.getConnection(config.getJdbcConnection().getConnectionURL(), config.getJdbcConnection().getUserId(), config.getJdbcConnection().getPassword());
-                dbMetaData = con.getMetaData();
-            }
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-        } catch (SQLException e) {
+            Class.forName(config.getJdbcConnection().getDriverClass());
+            Connection con = DriverManager.getConnection(config.getJdbcConnection().getConnectionURL(), config.getJdbcConnection().getUserId(), config.getJdbcConnection().getPassword());
+            dbMetaData = con.getMetaData();
+        } catch (ClassNotFoundException | SQLException e) {
             e.printStackTrace();
         }
     }
@@ -74,14 +76,14 @@ public class GeneratorController {
             String tableName = rs.getString("TABLE_NAME"); // 表名
             String tableType = rs.getString("TABLE_TYPE"); // 表类型
             String remarks = rs.getString("REMARKS"); // 表备注
-            System.out.println(catalog + "\t" + tableName + "\t" + tableType + "\t" + remarks);
+
             DBTable dbTable = new DBTable(dbMetaData,catalogName,tableName);
-            //name table elements.
+
             dbTable.setTableName(tableName);
             dbTable.setCamelName(NameRule.Underline2Camel(tableName));
             dbTable.setCamelEntityName(NameRule.appendEntity(dbTable.getCamelName()));
             dbTable.setCamelMapperName(NameRule.appendMapper(dbTable.getCamelName()));
-
+            dbTable.setRemark(remarks);
             dbTable.setPascalName(NameRule.Underline2Pascal(tableName));
             dbTable.setPascalEntityName(NameRule.appendEntity(dbTable.getPascalName()));
             dbTable.setPascalMapperName(NameRule.appendMapper(dbTable.getPascalName()));

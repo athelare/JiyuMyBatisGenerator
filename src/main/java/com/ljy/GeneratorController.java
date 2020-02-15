@@ -25,9 +25,6 @@ public class GeneratorController {
 
     private GeneratorConfig config;
 
-    private String fullyQualifiedEntityPackage;
-    private String fullyQualifiedMapperPackage;
-
     private void readGeneratorConfig(String path) throws DocumentException {
         Document document = new SAXReader().read(new File(path));
 
@@ -38,6 +35,7 @@ public class GeneratorController {
         Element javaModelGenerator = context.element("javaModelGenerator");
         Element javaClientGenerator = context.element("javaClientGenerator");
         Element sqlMapGenerator = context.element("sqlMapGenerator");
+
 
         config.getJdbcConnection().setDriverClass(jdbcConnection.attributeValue("driverClass"));
         config.getJdbcConnection().setConnectionURL(jdbcConnection.attributeValue("connectionURL"));
@@ -88,11 +86,29 @@ public class GeneratorController {
             dbTable.setPascalEntityName(NameRule.appendEntity(dbTable.getPascalName()));
             dbTable.setPascalMapperName(NameRule.appendMapper(dbTable.getPascalName()));
 
-            dbTable.setFullyQualifiedEntityPackage(this.getFullyQualifiedEntityPackage());
-            dbTable.setFullyQualifiedMapperPackage(this.getFullyQualifiedMapperPackage());
+            dbTable.setFullyQualifiedEntityPackage(config.getJavaModelGenerator().getTargetPackage());
+            dbTable.setFullyQualifiedMapperPackage(config.getSqlMapGenerator().getTargetPackage());
+            dbTable.setFullyQualifiedDaoPackage(config.getJavaClientGenerator().getTargetPackage());
 
-            dbTable.setEntityDirPath(this.extractPath(dbTable.getFullyQualifiedEntityPackage()));
-            dbTable.setMapperDirPath(this.extractPath(dbTable.getFullyQualifiedMapperPackage()));
+            if(null == config.getJavaModelGenerator().getTargetProject()){
+                dbTable.setEntityDirPath(this.extractPath("src",dbTable.getFullyQualifiedEntityPackage()));
+            }else{
+                dbTable.setEntityDirPath(this.extractPath(config.getJavaModelGenerator().getTargetProject(),dbTable.getFullyQualifiedEntityPackage()));
+            }
+
+            if(null == config.getSqlMapGenerator().getTargetProject()){
+                dbTable.setMapperDirPath(this.extractPath("src",dbTable.getFullyQualifiedMapperPackage()));
+            }else {
+                dbTable.setMapperDirPath(this.extractPath(config.getSqlMapGenerator().getTargetProject(),dbTable.getFullyQualifiedMapperPackage()));
+            }
+
+            if(null == config.getJavaClientGenerator().getTargetProject()){
+                dbTable.setDaoDirPath(this.extractPath("src",config.getJavaClientGenerator().getTargetPackage()));
+            }else {
+                dbTable.setDaoDirPath(this.extractPath(config.getJavaClientGenerator().getTargetProject(),config.getJavaClientGenerator().getTargetPackage()));
+            }
+
+
 
             tables.add(dbTable);
             MyBatisXMLWriter.writeMyBatisXML(dbTable);
@@ -101,8 +117,15 @@ public class GeneratorController {
         CrudControllerWriter.writeControllerClass(tables);
     }
 
-    private String extractPath(String fullyQualifiedPackage){
-        StringBuilder sb = new StringBuilder("src\\");
+    public static void main(String[]args) throws SQLException, IOException, TemplateException, DocumentException {
+        GeneratorController rt = new GeneratorController();
+        rt.readGeneratorConfig("src\\main\\resources\\generatorConfig.xml");
+        rt.getDatabaseMetaData();
+        rt.getAllTableList("classroom");
+    }
+
+    private String extractPath(String targetProject, String fullyQualifiedPackage){
+        StringBuilder sb = new StringBuilder(targetProject+"\\");
         StringTokenizer st = new StringTokenizer(fullyQualifiedPackage,".");
         while (st.hasMoreTokens()) {
             sb.append(st.nextToken());
@@ -114,32 +137,6 @@ public class GeneratorController {
             f.mkdirs();
         }
         return sb.toString();
-    }
-
-    public static void main(String[]args) throws SQLException, IOException, TemplateException, DocumentException {
-        GeneratorController rt = new GeneratorController();
-        rt.readGeneratorConfig("src\\main\\resources\\generatorConfig.xml");
-        rt.getDatabaseMetaData();
-        rt.setFullyQualifiedEntityPackage("com.ljy.entity");
-        rt.setFullyQualifiedMapperPackage("com.ljy.mapper");
-
-        rt.getAllTableList("classroom");
-    }
-
-    public String getFullyQualifiedEntityPackage() {
-        return fullyQualifiedEntityPackage;
-    }
-
-    public void setFullyQualifiedEntityPackage(String fullyQualifiedEntityPackage) {
-        this.fullyQualifiedEntityPackage = fullyQualifiedEntityPackage;
-    }
-
-    public String getFullyQualifiedMapperPackage() {
-        return fullyQualifiedMapperPackage;
-    }
-
-    public void setFullyQualifiedMapperPackage(String fullyQualifiedMapperPackage) {
-        this.fullyQualifiedMapperPackage = fullyQualifiedMapperPackage;
     }
 
 }

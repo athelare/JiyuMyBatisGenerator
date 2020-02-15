@@ -12,7 +12,7 @@ import java.util.Map;
 public class EntityMapperWriter {
     public static void writeEntityClass(DBTable dbTable) throws IOException, TemplateException {
         BufferedWriter entityWriter = new BufferedWriter(new FileWriter(new File(dbTable.getEntityDirPath()+dbTable.getPascalEntityName()+".java")));
-        BufferedWriter mapperWriter = new BufferedWriter(new FileWriter(new File(dbTable.getMapperDirPath()+dbTable.getPascalMapperName()+".java")));
+        BufferedWriter mapperWriter = new BufferedWriter(new FileWriter(new File(dbTable.getDaoDirPath()+dbTable.getPascalMapperName()+".java")));
         Configuration configuration = new Configuration(Configuration.getVersion());
         configuration.setDirectoryForTemplateLoading(new File("src\\main\\resources\\"));
         configuration.setDefaultEncoding("utf-8");

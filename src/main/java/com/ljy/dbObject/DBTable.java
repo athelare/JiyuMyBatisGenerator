@@ -25,8 +25,10 @@ public class DBTable {
     private boolean hasComposeKey;//是否复合主键，如果主键只有一个属性就置为假，复合主键就置为真
     private String fullyQualifiedEntityPackage;
     private String fullyQualifiedMapperPackage;
+    private String fullyQualifiedDaoPackage;
     private String entityDirPath;
     private String mapperDirPath;
+    private String daoDirPath;
     private String primaryKeyType;
 
 
@@ -241,5 +243,21 @@ public class DBTable {
 
     public void setPrimaryKeyType(String primaryKeyType) {
         this.primaryKeyType = primaryKeyType;
+    }
+
+    public String getFullyQualifiedDaoPackage() {
+        return fullyQualifiedDaoPackage;
+    }
+
+    public void setFullyQualifiedDaoPackage(String fullyQualifiedDaoPackage) {
+        this.fullyQualifiedDaoPackage = fullyQualifiedDaoPackage;
+    }
+
+    public String getDaoDirPath() {
+        return daoDirPath;
+    }
+
+    public void setDaoDirPath(String daoDirPath) {
+        this.daoDirPath = daoDirPath;
     }
 }

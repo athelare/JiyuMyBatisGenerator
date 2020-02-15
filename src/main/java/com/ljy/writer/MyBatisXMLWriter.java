@@ -32,21 +32,13 @@ public class MyBatisXMLWriter {
 
 
         rootElement.add(XMLCodeGen.generateBaseResultMap(dbTable));
-
         rootElement.add(XMLCodeGen.generateBaseColumnList(dbTable));
-
         rootElement.add(XMLCodeGen.generateSelectByPrimaryKey(dbTable));
-
         rootElement.add(XMLCodeGen.generateSelectBy(dbTable));
-
         rootElement.add(XMLCodeGen.generateInsert(dbTable));
-
         rootElement.add(XMLCodeGen.generateInsertSelective(dbTable));
-
         rootElement.add(XMLCodeGen.generateDeleteByPrimaryKey(dbTable));
-
         rootElement.add(XMLCodeGen.generateUpdateByPrimaryKey(dbTable));
-
         rootElement.add(XMLCodeGen.generateUpdateByPrimaryKeySelective(dbTable));
         //Output directory
 
@@ -57,35 +49,4 @@ public class MyBatisXMLWriter {
         writer.setEscapeText(false);
         writer.write(document);
     }
-
-/*    public static void main(String[]args) throws IOException {
-        //XML文档对象
-        Document document = DocumentHelper.createDocument();
-        document.addDocType("mapper","-//mybatis.org//DTD Mapper 3.0//EN","http://mybatis.org/dtd/mybatis-3-mapper.dtd");
-
-        Element rootElement = DocumentHelper.createElement("mapper");
-        rootElement.addAttribute("namespace","com.device.server.mapper.DeviceStyleMapper");
-        document.add(rootElement);
-
-        Element resultMap = DocumentHelper.createElement("resultMap")
-                .addAttribute("id","BaseResultMap")
-                .addAttribute("type","com.device.api.entity.DeviceStyleEntity");
-        resultMap.add(DocumentHelper.createElement("id").addAttribute("column","STYLE_ID"));
-
-        rootElement.add(resultMap);
-
-        Element selectByPrimaryKey = DocumentHelper.createElement("select")
-                .addAttribute("id","selectByPrimaryKey")
-                .addAttribute("resultMap","BaseResultMap");
-
-        selectByPrimaryKey.setText("<asd>");
-        rootElement.add(selectByPrimaryKey);
-        System.out.println(document.toString());
-
-        OutputFormat format = new OutputFormat("  ",true,"UTF-8");
-        XMLWriter writer = new XMLWriter(format);
-        writer.setEscapeText(false);
-        writer.write(document);
-
-    }*/
 }

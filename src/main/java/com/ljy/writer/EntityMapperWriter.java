@@ -10,14 +10,19 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class EntityMapperWriter {
-    public static void writeEntityClass(DBTable dbTable) throws IOException, TemplateException {
+    public static void writeEntityClass(
+            DBTable dbTable,
+            String templateDirectory,
+            String entityTemplateName,
+            String mapperTemplateName
+    ) throws IOException, TemplateException {
         BufferedWriter entityWriter = new BufferedWriter(new FileWriter(new File(dbTable.getEntityDirPath()+dbTable.getPascalEntityName()+".java")));
         BufferedWriter mapperWriter = new BufferedWriter(new FileWriter(new File(dbTable.getDaoDirPath()+dbTable.getPascalMapperName()+".java")));
         Configuration configuration = new Configuration(Configuration.getVersion());
-        configuration.setDirectoryForTemplateLoading(new File("src\\main\\resources\\"));
+        configuration.setDirectoryForTemplateLoading(new File(templateDirectory));
         configuration.setDefaultEncoding("utf-8");
-        Template entityTemplate = configuration.getTemplate("entityTemplate.java");
-        Template mapperTemplate = configuration.getTemplate("mapperTemplate.java");
+        Template entityTemplate = configuration.getTemplate(entityTemplateName);
+        Template mapperTemplate = configuration.getTemplate(mapperTemplateName);
         Map dataModel = new HashMap<>();
 
         dataModel.put("table",dbTable);

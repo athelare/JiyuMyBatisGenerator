@@ -10,12 +10,12 @@ public class CrudController{
 
 
 <#list tables as table>
-    public Response add${table.pascalName}(${table.pascalEntityName} ${table.camelEntityName}){
+    public int add${table.pascalName}(${table.pascalEntityName} ${table.camelEntityName}){
         try{
-            ${table.camelMapperName}.insert(${table.camelEntityName});
+            int ${table.camelMapperName}.insert(${table.camelEntityName});
         }catch (Exception e){
             e.printStackTrace();
-            return Response.error();
+            return -1;
         }finally {
             return response.success();
         }

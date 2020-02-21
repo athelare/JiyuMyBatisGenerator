@@ -2,7 +2,7 @@ package com.ljy;
 
 import com.ljy.dbObject.DBTable;
 import com.ljy.pojo.GeneratorConfig;
-import com.ljy.writer.CrudControllerWriter;
+import com.ljy.writer.CrudControllerDocumentWriter;
 import com.ljy.writer.EntityMapperWriter;
 import com.ljy.writer.MyBatisXMLWriter;
 import com.ljy.util.NameRule;
@@ -15,9 +15,7 @@ import org.dom4j.io.SAXReader;
 import java.io.File;
 import java.io.IOException;
 import java.sql.*;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.StringTokenizer;
+import java.util.*;
 
 public class GeneratorController {
 
@@ -29,6 +27,8 @@ public class GeneratorController {
         Document document = new SAXReader().read(new File(path));
 
         config = new GeneratorConfig();
+        Iterator<Element> extraProperties;
+        Map<String,String> propertyPairs;
 
         Element context = document.getRootElement().element("context");
         Element jdbcConnection = context.element("jdbcConnection");
@@ -44,9 +44,25 @@ public class GeneratorController {
 
         config.getJavaModelGenerator().setTargetPackage(javaModelGenerator.attributeValue("targetPackage"));
         config.getJavaModelGenerator().setTargetProject(javaModelGenerator.attributeValue("targetProject"));
+        extraProperties = javaModelGenerator.elementIterator("property");
+        propertyPairs = new HashMap<>();
+        while(extraProperties.hasNext()){
+            Element tmp = extraProperties.next();
+            propertyPairs.put(tmp.attributeValue("name"),tmp.attributeValue("value"));
+        }
+        config.getJavaModelGenerator().setProperties(propertyPairs);
+
 
         config.getJavaClientGenerator().setTargetPackage(javaClientGenerator.attributeValue("targetPackage"));
         config.getJavaClientGenerator().setTargetProject(javaClientGenerator.attributeValue("targetProject"));
+        extraProperties = javaClientGenerator.elementIterator("property");
+        propertyPairs = new HashMap<>();
+        while(extraProperties.hasNext()){
+            Element tmp = extraProperties.next();
+            propertyPairs.put(tmp.attributeValue("name"),tmp.attributeValue("value"));
+        }
+        config.getJavaClientGenerator().setProperties(propertyPairs);
+
 
         config.getSqlMapGenerator().setTargetPackage(sqlMapGenerator.attributeValue("targetPackage"));
         config.getSqlMapGenerator().setTargetProject(sqlMapGenerator.attributeValue("targetProject"));
@@ -112,9 +128,13 @@ public class GeneratorController {
 
             tables.add(dbTable);
             MyBatisXMLWriter.writeMyBatisXML(dbTable);
-            EntityMapperWriter.writeEntityClass(dbTable);
+            EntityMapperWriter.writeEntityClass(
+                    dbTable,
+                    config.getJavaClientGenerator().getProperties().get("templateDirectory"),
+                    config.getJavaModelGenerator().getProperties().get("entityTemplateName"),
+                    config.getJavaClientGenerator().getProperties().get("mapperTemplateName"));
         }
-        CrudControllerWriter.writeControllerClass(tables);
+        CrudControllerDocumentWriter.writeControllerClass(tables);
     }
 
     public static void main(String[]args) throws SQLException, IOException, TemplateException, DocumentException {

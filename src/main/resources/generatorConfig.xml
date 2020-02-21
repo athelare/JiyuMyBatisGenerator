@@ -24,6 +24,8 @@
         <!--生成entity类存放位置-->
         <javaModelGenerator targetPackage="com.ljy.entity"
                             targetProject="src">
+            <property name="templateDirectory" value="src/main/resources/"/>
+            <property name="entityTemplateName" value="entityTemplate.ftl"/>
             <property name="enableSubPackages" value="true"/>
             <property name="trimStrings" value="true"/>
         </javaModelGenerator>
@@ -37,7 +39,14 @@
                              targetPackage="com.ljy.mapper.dao"
                              targetProject="src">
             <property name="enableSubPackages" value="true"/>
+            <property name="templateDirectory" value="src/main/resources/"/>
+            <property name="mapperTemplateName" value="mapperTemplate.ftl"/>
+            <property name="documentTemplateName" value="documentTemplate.ftl"/>
+            <property name="controllerMapperPrefix" value="/crud/"/>
+            <property name="" value=""/>
         </javaClientGenerator>
+        
+        
 
 
         <table tableName="表名" domainObjectName="生成实体的类名"/>

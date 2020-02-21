@@ -2,9 +2,6 @@ package com.ljy.dbObject;
 
 import com.ljy.util.NameRule;
 
-import java.util.HashMap;
-import java.util.Map;
-
 public class DBColumn {
 
     private String columnName;
@@ -12,7 +9,7 @@ public class DBColumn {
     private String pascalName;
     private int columnSize;
     private boolean nullable;
-    private String remarks;
+    private String remark;
     private String columnDefault;
     private String autoincrement;
     private boolean primaryKey;
@@ -47,12 +44,12 @@ public class DBColumn {
         this.nullable = nullable;
     }
 
-    public String getRemarks() {
-        return remarks;
+    public String getRemark() {
+        return remark;
     }
 
-    public void setRemarks(String remarks) {
-        this.remarks = remarks;
+    public void setRemark(String remark) {
+        this.remark = remark;
     }
 
     public String getColumnDefault() {
@@ -78,7 +75,7 @@ public class DBColumn {
                 "columnName='" + columnName + '\'' +
                 ", columnSize=" + columnSize +
                 ", nullable=" + nullable +
-                ", remarks='" + remarks + '\'' +
+                ", remarks='" + remark + '\'' +
                 ", columnDefault='" + columnDefault + '\'' +
                 ", autoincrement=" + autoincrement +
                 '}';

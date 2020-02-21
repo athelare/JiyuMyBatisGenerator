@@ -30,6 +30,7 @@ public class DBTable {
     private String mapperDirPath;
     private String daoDirPath;
     private String primaryKeyType;
+    private String apiUrl;
 
 
 
@@ -58,7 +59,7 @@ public class DBTable {
             column.setJavaTypeName(NameRule.jdbcType2JavaType(dataTypeName));
             column.setColumnSize(columnSize);
             column.setNullable(nullable);
-            column.setRemarks(remarks);
+            column.setRemark(remarks);
             column.setColumnDefault(columnDef);
 
             columns.add(column);
@@ -259,5 +260,13 @@ public class DBTable {
 
     public void setDaoDirPath(String daoDirPath) {
         this.daoDirPath = daoDirPath;
+    }
+
+    public String getApiUrl() {
+        return apiUrl;
+    }
+
+    public void setApiUrl(String apiUrl) {
+        this.apiUrl = apiUrl;
     }
 }

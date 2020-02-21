@@ -15,7 +15,7 @@ public class ${table.pascalEntityName} {
 
 <#list table.columns as column>
     /**
-     * ${column.remarks}
+     * ${column.remark}
      */
     private ${column.javaTypeName} ${column.camelName};
 

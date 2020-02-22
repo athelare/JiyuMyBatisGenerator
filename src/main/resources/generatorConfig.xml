@@ -42,8 +42,8 @@
             <property name="templateDirectory" value="src/main/resources/"/>
             <property name="mapperTemplateName" value="mapperTemplate.ftl"/>
             <property name="documentTemplateName" value="documentTemplate.ftl"/>
-            <property name="controllerMapperPrefix" value="/crud/"/>
-            <property name="" value=""/>
+            <property name="controllerTemplateName" value="crudControllerTemplate.ftl"/>
+            <property name="urlPrefix" value="/crud"/>
         </javaClientGenerator>
         
         

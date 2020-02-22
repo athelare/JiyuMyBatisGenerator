@@ -134,7 +134,10 @@ public class GeneratorController {
                     config.getJavaModelGenerator().getProperties().get("entityTemplateName"),
                     config.getJavaClientGenerator().getProperties().get("mapperTemplateName"));
         }
-        CrudControllerDocumentWriter.writeControllerClass(tables);
+        CrudControllerDocumentWriter.writeControllerClass(
+                tables,
+                config.getJavaClientGenerator().getProperties()
+                );
     }
 
     public static void main(String[]args) throws SQLException, IOException, TemplateException, DocumentException {
@@ -153,8 +156,8 @@ public class GeneratorController {
         }
 
         File f = new File(sb.toString());
-        if(!f.exists()){
-            f.mkdirs();
+        if(!f.exists() && !f.mkdirs()){
+            System.out.println("未能成功创建文件夹");
         }
         return sb.toString();
     }

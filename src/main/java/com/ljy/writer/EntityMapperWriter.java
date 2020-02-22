@@ -23,7 +23,7 @@ public class EntityMapperWriter {
         configuration.setDefaultEncoding("utf-8");
         Template entityTemplate = configuration.getTemplate(entityTemplateName);
         Template mapperTemplate = configuration.getTemplate(mapperTemplateName);
-        Map dataModel = new HashMap<>();
+        Map<String, Object> dataModel = new HashMap<>();
 
         dataModel.put("table",dbTable);
         dataModel.put("author","Jiyu");

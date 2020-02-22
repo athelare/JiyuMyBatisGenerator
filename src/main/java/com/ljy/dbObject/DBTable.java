@@ -30,7 +30,6 @@ public class DBTable {
     private String mapperDirPath;
     private String daoDirPath;
     private String primaryKeyType;
-    private String apiUrl;
 
 
 
@@ -262,11 +261,4 @@ public class DBTable {
         this.daoDirPath = daoDirPath;
     }
 
-    public String getApiUrl() {
-        return apiUrl;
-    }
-
-    public void setApiUrl(String apiUrl) {
-        this.apiUrl = apiUrl;
-    }
 }

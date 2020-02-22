@@ -14,28 +14,28 @@ import java.util.List;
 import java.util.Map;
 
 public class CrudControllerDocumentWriter {
-    public static void writeControllerClass(List<DBTable> tables) throws IOException, TemplateException {
+    public static void writeControllerClass(List<DBTable> tables, Map<String,String> properties) throws IOException, TemplateException {
         BufferedWriter writer = new BufferedWriter(new FileWriter(new File(tables.get(0).getEntityDirPath()+"crudController.java")));
         BufferedWriter writer1 = new BufferedWriter(new FileWriter(new File(tables.get(0).getEntityDirPath()+"API.md")));
 
         Configuration configuration = new Configuration(Configuration.getVersion());
-        configuration.setDirectoryForTemplateLoading(new File("src\\main\\resources\\"));
+        configuration.setDirectoryForTemplateLoading(new File(properties.get("templateDirectory")));
         configuration.setDefaultEncoding("utf-8");
 
-        configuration.setDirectoryForTemplateLoading(new File("src\\main\\resources\\"));
+        Template controllerTemplate = configuration.getTemplate(properties.get("controllerTemplateName"));
+        Template documentTemplate = configuration.getTemplate(properties.get("documentTemplateName"));
 
-        Template entityTemplate = configuration.getTemplate("crudControllerTemplate.ftl");
-        Template entityTemplate1 = configuration.getTemplate("documentTemplate.ftl");
+        Map<String, Object> dataModel = new HashMap<>();
 
-        Map dataModel = new HashMap<>();
 
         dataModel.put("tables",tables);
         dataModel.put("author","Jiyu");
         dataModel.put("comment","hello");
         dataModel.put("time","2020-01-19");
+        dataModel.put("urlPrefix",properties.get("urlPrefix"));
 
-        entityTemplate.process(dataModel,writer);
-        entityTemplate1.process(dataModel,writer1);
+        controllerTemplate.process(dataModel,writer);
+        documentTemplate.process(dataModel,writer1);
 
         writer.close();
         writer1.close();

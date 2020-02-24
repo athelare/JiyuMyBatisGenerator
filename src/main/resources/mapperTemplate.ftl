@@ -1,6 +1,8 @@
 package ${table.fullyQualifiedMapperPackage};
 
 import java.util.List;
+import ${table.fullyQualifiedEntityPackage}.${table.pascalEntityName};
+<#if table.hasComposeKey()>import ${table.fullyQualifiedEntityPackage}.${table.pascalEntityName}PrimaryKey;</#if>
 
 /**
  * ${comment!""}

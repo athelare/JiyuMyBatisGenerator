@@ -4,19 +4,19 @@ import com.ljy.util.NameRule;
 
 public class DBColumn {
 
-    private String columnName;
-    private String camelName;
-    private String pascalName;
-    private int columnSize;
-    private boolean nullable;
-    private String remark;
-    private String columnDefault;
-    private String autoincrement;
-    private boolean primaryKey;
-    private int jdbcTypeIndex;
-    private String jdbcTypeName;
+    private String columnName;      //列明
+    private String camelName;       //驼峰式命名
+    private String pascalName;      //大写的命名
+    private int columnSize;         //列定义的长度
+    private boolean nullable;       //是否可以为NULL值
+    private String remark;          //备注
+    private String columnDefault;   //默认值
+    private String autoincrement;   //自动增长
+    private boolean primaryKey;     //是否为主键
+    private int jdbcTypeIndex;      //jdbc类型的整数值
+    private String jdbcTypeName;    //jdbc类型名
     private int jdbcLength;
-    private String javaTypeName;
+    private String javaTypeName;    //java类型名
 
     public String getColumnName() {
         return columnName;

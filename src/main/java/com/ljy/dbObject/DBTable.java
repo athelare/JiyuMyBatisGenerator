@@ -13,32 +13,42 @@ import java.util.List;
  * @author Jiyu
  */
 public class DBTable {
-    private String tableName;
+    private String tableName;       //原始名称
     private String camelName;       //数据库名称转驼峰命名（用于url名称）
     private String pascalName;      //数据库名称转大驼峰命名
     private String pascalEntityName;//数据库名称转大驼峰+Entity命名（用于类名称）
     private String camelEntityName; //数据库名称转驼峰+Entity命名（用于对象名称）
     private String pascalMapperName;//数据库名称转大驼峰+Mapper命名（用于映射类/文件名称）
     private String camelMapperName; //数据库名称转驼峰+Mapper命名（用于映射对象名称）
-    private String remark;
-    private boolean hasPrimaryKey;//是否有主键，有的话置为真
-    private boolean hasComposeKey;//是否复合主键，如果主键只有一个属性就置为假，复合主键就置为真
-    private String fullyQualifiedEntityPackage;
-    private String fullyQualifiedMapperPackage;
-    private String fullyQualifiedDaoPackage;
-    private String entityDirPath;
-    private String mapperDirPath;
-    private String daoDirPath;
+    private String remark;          //描述
+
+    private boolean hasPrimaryKey;  //是否有主键，有的话置为真
+    private boolean hasComposeKey;  //是否复合主键，如果主键只有一个属性就置为假，复合主键就置为真
+    private String fullyQualifiedEntityPackage; //实体类所在包
+    private String fullyQualifiedMapperPackage; //映射文件（XML文件）的包
+    private String fullyQualifiedDaoPackage;    //数据访问对象DAO接口
+    private String entityDirPath;               //实体类文件夹路径
+    private String mapperDirPath;               //XML文件夹路径
+    private String daoDirPath;                  //
     private String primaryKeyType;
-
-
 
     private List<DBColumn> primaryKey;
     private List<DBColumn> columns;
 
     public DBTable(DatabaseMetaData dbMetaData, String catalogName, String tableName) throws SQLException {
+
+        this.setTableName(tableName);
+        this.setCamelName(NameRule.Underline2Camel(tableName));
+        this.setCamelEntityName(NameRule.appendEntity(this.getCamelName()));
+        this.setCamelMapperName(NameRule.appendMapper(this.getCamelName()));
+        this.setPascalName(NameRule.Underline2Pascal(tableName));
+        this.setPascalEntityName(NameRule.appendEntity(this.getPascalName()));
+        this.setPascalMapperName(NameRule.appendMapper(this.getPascalName()));
+
+
         columns = new ArrayList<>();
 
+        //获取列信息
         ResultSet rs = dbMetaData.getColumns(catalogName,null,tableName,"%");
         while(rs.next()){
             String columnName = rs.getString("COLUMN_NAME");
@@ -65,14 +75,18 @@ public class DBTable {
 
         }
 
+        //获取主键信息
         primaryKey = new ArrayList<>();
         rs = dbMetaData.getPrimaryKeys(catalogName,null,tableName);
         int primaryKeyCount = 0;
         while(rs.next()){
+
+            //设置为主键
             this.setHasPrimaryKey(true);
             primaryKeyCount++;
             String columnName = rs.getString("COLUMN_NAME");
 
+            //在列上添加主键标记
             for(DBColumn column:columns){
                 if(column.getColumnName().equals(columnName)){
                     column.setPrimaryKey(true);
@@ -80,6 +94,8 @@ public class DBTable {
                 }
             }
         }
+
+        //
         if(primaryKeyCount>1){
             this.setHasComposeKey(true);
             this.setPrimaryKeyType(this.getPascalEntityName()+"PrimaryKey");
@@ -260,5 +276,14 @@ public class DBTable {
     public void setDaoDirPath(String daoDirPath) {
         this.daoDirPath = daoDirPath;
     }
+
+    public boolean isHasPrimaryKey() {
+        return hasPrimaryKey;
+    }
+
+    public boolean isHasComposeKey() {
+        return hasComposeKey;
+    }
+
 
 }

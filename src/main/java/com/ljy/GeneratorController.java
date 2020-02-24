@@ -93,15 +93,7 @@ public class GeneratorController {
 
             DBTable dbTable = new DBTable(dbMetaData,catalogName,tableName);
 
-            dbTable.setTableName(tableName);
-            dbTable.setCamelName(NameRule.Underline2Camel(tableName));
-            dbTable.setCamelEntityName(NameRule.appendEntity(dbTable.getCamelName()));
-            dbTable.setCamelMapperName(NameRule.appendMapper(dbTable.getCamelName()));
             dbTable.setRemark(remarks);
-            dbTable.setPascalName(NameRule.Underline2Pascal(tableName));
-            dbTable.setPascalEntityName(NameRule.appendEntity(dbTable.getPascalName()));
-            dbTable.setPascalMapperName(NameRule.appendMapper(dbTable.getPascalName()));
-
             dbTable.setFullyQualifiedEntityPackage(config.getJavaModelGenerator().getTargetPackage());
             dbTable.setFullyQualifiedMapperPackage(config.getSqlMapGenerator().getTargetPackage());
             dbTable.setFullyQualifiedDaoPackage(config.getJavaClientGenerator().getTargetPackage());
@@ -132,7 +124,11 @@ public class GeneratorController {
                     dbTable,
                     config.getJavaClientGenerator().getProperties().get("templateDirectory"),
                     config.getJavaModelGenerator().getProperties().get("entityTemplateName"),
-                    config.getJavaClientGenerator().getProperties().get("mapperTemplateName"));
+                    config.getJavaClientGenerator().getProperties().get("mapperTemplateName")
+            );
+            //TODO 处理复合主键的情况
+
+
         }
         CrudControllerDocumentWriter.writeControllerClass(
                 tables,

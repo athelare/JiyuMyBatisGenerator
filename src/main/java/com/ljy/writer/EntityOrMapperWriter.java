@@ -9,8 +9,8 @@ import java.io.*;
 import java.util.HashMap;
 import java.util.Map;
 
-public class EntityMapperWriter {
-    public static void writeEntityClass(
+public class EntityOrMapperWriter {
+    public static void write(
             DBTable dbTable,
             String templateDirectory,
             String entityTemplateName,
@@ -35,5 +35,28 @@ public class EntityMapperWriter {
 
         entityWriter.close();
         mapperWriter.close();
+    }
+
+
+    public static void write1(
+            DBTable dbTable,
+            String fileName,
+            Map<String, String> properties
+    ) throws IOException, TemplateException {
+        BufferedWriter entityWriter = new BufferedWriter(new FileWriter(new File(fileName)));
+        Configuration configuration = new Configuration(Configuration.getVersion());
+        configuration.setDirectoryForTemplateLoading(new File(properties.get("templateDirectory")));
+        configuration.setDefaultEncoding("utf-8");
+        Template entityTemplate = configuration.getTemplate(properties.get("templateName"));
+        Map<String, Object> dataModel = new HashMap<>();
+
+        dataModel.put("table",dbTable);
+        dataModel.put("author","Jiyu");
+        dataModel.put("comment","hello");
+        dataModel.put("time","2020-01-19");
+
+        entityTemplate.process(dataModel,entityWriter);
+
+        entityWriter.close();
     }
 }

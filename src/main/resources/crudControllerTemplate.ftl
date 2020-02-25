@@ -10,7 +10,7 @@ public class CrudController{
 
 
 <#list tables as table>
-    @PostMapping("${urlPrefix}/${table.camelName}/add"}
+    @PostMapping("${urlPrefix}/${table.camelName}/add")
     public int add${table.pascalName}(${table.pascalEntityName} ${table.camelEntityName}){
         try{
             int ${table.camelMapperName}.insert(${table.camelEntityName});

@@ -104,6 +104,13 @@ public class DBTable {
         }
     }
 
+    //生成PrimaryKey类
+    public DBTable(DBTable dbTable){
+        this.setColumns(dbTable.getPrimaryKey());
+        this.setFullyQualifiedEntityPackage(dbTable.getFullyQualifiedEntityPackage());
+        this.setRemark("主键类");
+        this.setPascalEntityName(dbTable.getPascalEntityName()+"PrimaryKey");
+    }
 
     public String getTableName() {
         return tableName;

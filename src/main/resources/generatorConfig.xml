@@ -24,7 +24,8 @@
         <!--生成entity类存放位置-->
         <javaModelGenerator targetPackage="com.ljy.entity"
                             targetProject="D:\Source\Java\generatorTest\src\main\java">
-            <property name="entityTemplateName" value="entityTemplate.ftl"/>
+            <property name="templateName" value="entityTemplate.ftl"/>
+            <property name="templateDirectory" value="src\main\resources"/>
             <property name="enableSubPackages" value="true"/>
             <property name="trimStrings" value="true"/>
         </javaModelGenerator>
@@ -39,7 +40,7 @@
                              targetProject="D:\Source\Java\generatorTest\src\main\java">
             <property name="enableSubPackages" value="true"/>
             <property name="templateDirectory" value="src\main\resources"/>
-            <property name="mapperTemplateName" value="mapperTemplate.ftl"/>
+            <property name="templateName" value="mapperTemplate.ftl"/>
             <property name="documentTemplateName" value="documentTemplate.ftl"/>
             <property name="controllerTemplateName" value="crudControllerTemplate.ftl"/>
             <property name="urlPrefix" value="/crud"/>

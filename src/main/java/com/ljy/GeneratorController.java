@@ -3,9 +3,8 @@ package com.ljy;
 import com.ljy.dbObject.DBTable;
 import com.ljy.pojo.GeneratorConfig;
 import com.ljy.writer.CrudControllerDocumentWriter;
-import com.ljy.writer.EntityMapperWriter;
+import com.ljy.writer.EntityOrMapperWriter;
 import com.ljy.writer.MyBatisXMLWriter;
-import com.ljy.util.NameRule;
 import freemarker.template.TemplateException;
 import org.dom4j.Document;
 import org.dom4j.DocumentException;
@@ -120,13 +119,19 @@ public class GeneratorController {
 
             tables.add(dbTable);
             MyBatisXMLWriter.writeMyBatisXML(dbTable);
-            EntityMapperWriter.writeEntityClass(
+            EntityOrMapperWriter.write(
                     dbTable,
                     config.getJavaClientGenerator().getProperties().get("templateDirectory"),
-                    config.getJavaModelGenerator().getProperties().get("entityTemplateName"),
-                    config.getJavaClientGenerator().getProperties().get("mapperTemplateName")
+                    config.getJavaModelGenerator().getProperties().get("templateName"),
+                    config.getJavaClientGenerator().getProperties().get("templateName")
             );
-            //TODO 处理复合主键的情况
+
+            if(dbTable.hasComposeKey()){
+                EntityOrMapperWriter.write1(
+                        new DBTable(dbTable),
+                        dbTable.getEntityDirPath()+dbTable.getPascalEntityName()+"PrimaryKey.java",
+                        config.getJavaModelGenerator().getProperties());
+            }
 
 
         }

@@ -1,3 +1,4 @@
+<#-- @ftlvariable name="table" type="com.ljy.dbObject.DBTable" -->
 package ${table.fullyQualifiedEntityPackage};
 
 import java.util.List;
@@ -22,11 +23,11 @@ public class ${table.pascalEntityName} {
 </#list>
 
 <#list table.columns as column>
-    private ${column.javaTypeName} get${column.pascalName}(){
+    public ${column.javaTypeName} get${column.pascalName}(){
             return ${column.camelName};
     }
 
-    private void set${column.pascalName}(${column.javaTypeName} ${column.camelName}){
+    public void set${column.pascalName}(${column.javaTypeName} ${column.camelName}){
         this.${column.camelName} = ${column.camelName};
     }
 

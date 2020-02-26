@@ -22,8 +22,8 @@
                         password="123456">
         </jdbcConnection>
         <!--生成entity类存放位置-->
-        <javaModelGenerator targetPackage="com.ljy.entity"
-                            targetProject="D:\Source\Java\generatorTest\src\main\java">
+        <javaModelGenerator targetPackage="com.ljy.test.entity"
+                            targetProject="D:\Source\Java\test\src\main\java">
             <property name="templateName" value="entityTemplate.ftl"/>
             <property name="templateDirectory" value="src\main\resources"/>
             <property name="enableSubPackages" value="true"/>
@@ -31,13 +31,13 @@
         </javaModelGenerator>
         <!--生成映射文件存放位置-->
         <sqlMapGenerator targetPackage="com.ljy.mapper"
-                         targetProject="D:\Source\Java\generatorTest\src\main\resources">
+                         targetProject="D:\Source\Java\test\src\main\resources">
             <property name="enableSubPackages" value="true"/>
         </sqlMapGenerator>
         <!--生成Dao类存放位置-->
         <javaClientGenerator type="XMLMAPPER"
-                             targetPackage="com.ljy.mapper"
-                             targetProject="D:\Source\Java\generatorTest\src\main\java">
+                             targetPackage="com.ljy.test.mapper"
+                             targetProject="D:\Source\Java\test\src\main\java">
             <property name="enableSubPackages" value="true"/>
             <property name="templateDirectory" value="src\main\resources"/>
             <property name="templateName" value="mapperTemplate.ftl"/>

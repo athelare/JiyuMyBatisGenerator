@@ -20,7 +20,7 @@ public class MyBatisXMLWriter {
     public static void writeMyBatisXML(DBTable dbTable) throws IOException {
 
         String fullyQualifiedEntity = dbTable.getFullyQualifiedEntityPackage()+"."+dbTable.getPascalEntityName();
-        String fullyQualifiedMapper = dbTable.getFullyQualifiedMapperPackage()+"."+dbTable.getPascalMapperName();
+        String fullyQualifiedMapper = dbTable.getFullyQualifiedDaoPackage()+"."+dbTable.getPascalMapperName();
 
 
         //XML文档对象

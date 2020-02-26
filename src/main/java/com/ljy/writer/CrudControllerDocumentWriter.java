@@ -27,7 +27,6 @@ public class CrudControllerDocumentWriter {
 
         Map<String, Object> dataModel = new HashMap<>();
 
-
         dataModel.put("tables",tables);
         dataModel.put("author","Jiyu");
         dataModel.put("comment","hello");

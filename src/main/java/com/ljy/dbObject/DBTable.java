@@ -64,6 +64,8 @@ public class DBTable {
             column.setColumnName(columnName);
             column.setAutoincrement(autoincrement);
             column.setJdbcTypeIndex(dataType);
+            if(dataTypeName.equals("INT"))dataTypeName = "INTEGER";
+            else if(dataTypeName.equals("ENUM"))dataTypeName = "VARCHAR";
             column.setJdbcTypeName(dataTypeName);
             column.setJavaTypeName(NameRule.jdbcType2JavaType(dataTypeName));
             column.setColumnSize(columnSize);

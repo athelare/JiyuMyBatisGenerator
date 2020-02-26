@@ -1,7 +1,7 @@
-//TODO package
+// todo package
 <#list tables as table>
 import ${table.fullyQualifiedEntityPackage}.${table.pascalEntityName};
-import ${table.fullyQualifiedMapperPackage}.${table.pascalMapperName};
+import ${table.fullyQualifiedDaoPackage}.${table.pascalMapperName};
 </#list>
 public class CrudController{
 <#list tables as table>
@@ -10,15 +10,16 @@ public class CrudController{
 
 
 <#list tables as table>
-    @PostMapping("${urlPrefix}/${table.camelName}/add")
+    //@PostMapping("${urlPrefix}/${table.camelName}/add")
     public int add${table.pascalName}(${table.pascalEntityName} ${table.camelEntityName}){
+        int res = 0;
         try{
-            int ${table.camelMapperName}.insert(${table.camelEntityName});
+            res =  ${table.camelMapperName}.insert(${table.camelEntityName});
         }catch (Exception e){
             e.printStackTrace();
             return -1;
         }finally {
-            return response.success();
+            return res;
         }
     }
 

@@ -30,7 +30,7 @@ public class NameRule {
         converter.put("DATE", "java.sql.Date");
         converter.put("TIME", "java.sql.Time");
         converter.put("TIMESTAMP", "java.sql.Timestamp");
-        converter.put("CLOB", "Clob");
+        converter.put("CLOB", "String");
         converter.put("BLOB", "Blob");
         converter.put("ARRAY", "Array");
 

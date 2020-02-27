@@ -66,6 +66,8 @@ public class DBTable {
             column.setJdbcTypeIndex(dataType);
             if(dataTypeName.equals("INT"))dataTypeName = "INTEGER";
             else if(dataTypeName.equals("ENUM"))dataTypeName = "VARCHAR";
+            else if(dataTypeName.equals(("DATETIME")))dataTypeName = "TIMESTAMP";
+            else if(dataTypeName.equals(("TEXT")))dataTypeName = "CLOB";
             column.setJdbcTypeName(dataTypeName);
             column.setJavaTypeName(NameRule.jdbcType2JavaType(dataTypeName));
             column.setColumnSize(columnSize);

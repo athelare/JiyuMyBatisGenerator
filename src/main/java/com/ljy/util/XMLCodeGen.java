@@ -173,7 +173,6 @@ public class XMLCodeGen {
             sb.append("      </if>\n");
         }
         sb.append("    </trim>\n");
-        sb.append("    VALUES\n");
         sb.append("    <trim prefix=\"VALUES (\" suffix=\")\" suffixOverrides=\",\" >\n");
         for(DBColumn column:dbTable.getColumns()){
             sb.append("      <if test=\""+column.getCamelName()+" != null\" >\n");

@@ -145,7 +145,7 @@ public class GeneratorController {
         GeneratorController rt = new GeneratorController();
         rt.readGeneratorConfig("src\\main\\resources\\generatorConfig.xml");
         rt.getDatabaseMetaData();
-        rt.getAllTableList("classroom");
+        rt.getAllTableList("word_liberty");
     }
 
     private String extractPath(String targetProject, String fullyQualifiedPackage){

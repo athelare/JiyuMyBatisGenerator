@@ -1,12 +1,15 @@
 package com.ljy.dbObject;
 
+import com.ljy.pojo.GeneratorConfig;
 import com.ljy.util.NameRule;
 
+import java.io.File;
 import java.sql.DatabaseMetaData;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.StringTokenizer;
 
 /**
  * 数据库表
@@ -35,7 +38,7 @@ public class DBTable {
     private List<DBColumn> primaryKey;
     private List<DBColumn> columns;
 
-    public DBTable(DatabaseMetaData dbMetaData, String catalogName, String tableName) throws SQLException {
+    public DBTable(GeneratorConfig config, DatabaseMetaData dbMetaData, String catalogName, String tableName, String remark) throws SQLException {
 
         this.setTableName(tableName);
         this.setCamelName(NameRule.Underline2Camel(tableName));
@@ -44,6 +47,45 @@ public class DBTable {
         this.setPascalName(NameRule.Underline2Pascal(tableName));
         this.setPascalEntityName(NameRule.appendEntity(this.getPascalName()));
         this.setPascalMapperName(NameRule.appendMapper(this.getPascalName()));
+        this.setRemark(remark);
+        this.setFullyQualifiedEntityPackage(config.getJavaModelGenerator().getTargetPackage());
+        this.setFullyQualifiedMapperPackage(config.getSqlMapGenerator().getTargetPackage());
+        this.setFullyQualifiedDaoPackage(config.getJavaClientGenerator().getTargetPackage());
+        this.setEntityDirPath(this.extractPath(
+                null == config.getJavaModelGenerator().getTargetProject()?
+                        "src":
+                        config.getJavaModelGenerator().getTargetProject(),
+                this.getFullyQualifiedEntityPackage()
+        ));
+        this.setMapperDirPath(this.extractPath(
+                null == config.getSqlMapGenerator().getTargetProject()?
+                        "src":
+                        config.getSqlMapGenerator().getTargetProject(),
+                this.getFullyQualifiedMapperPackage()
+        ));
+        this.setDaoDirPath(this.extractPath(
+                null == config.getJavaClientGenerator().getTargetProject()?
+                        "src":
+                        config.getJavaClientGenerator().getTargetProject(),
+                config.getJavaClientGenerator().getTargetPackage()
+        ));
+        /*if(null == config.getJavaModelGenerator().getTargetProject()){
+            this.setEntityDirPath(this.extractPath("src",this.getFullyQualifiedEntityPackage()));
+        }else{
+            this.setEntityDirPath(this.extractPath(config.getJavaModelGenerator().getTargetProject(),this.getFullyQualifiedEntityPackage()));
+        }
+
+        if(null == config.getSqlMapGenerator().getTargetProject()){
+            this.setMapperDirPath(this.extractPath("src",this.getFullyQualifiedMapperPackage()));
+        }else {
+            this.setMapperDirPath(this.extractPath(config.getSqlMapGenerator().getTargetProject(),this.getFullyQualifiedMapperPackage()));
+        }
+
+        if(null == config.getJavaClientGenerator().getTargetProject()){
+            this.setDaoDirPath(this.extractPath("src",config.getJavaClientGenerator().getTargetPackage()));
+        }else {
+            this.setDaoDirPath(this.extractPath(config.getJavaClientGenerator().getTargetProject(),config.getJavaClientGenerator().getTargetPackage()));
+        }*/
 
 
         columns = new ArrayList<>();
@@ -64,16 +106,17 @@ public class DBTable {
             column.setColumnName(columnName);
             column.setAutoincrement(autoincrement);
             column.setJdbcTypeIndex(dataType);
-            if(dataTypeName.equals("INT"))dataTypeName = "INTEGER";
-            else if(dataTypeName.equals("ENUM"))dataTypeName = "VARCHAR";
-            else if(dataTypeName.equals(("DATETIME")))dataTypeName = "TIMESTAMP";
-            else if(dataTypeName.equals(("TEXT")))dataTypeName = "CLOB";
-            column.setJdbcTypeName(dataTypeName);
             column.setJavaTypeName(NameRule.jdbcType2JavaType(dataTypeName));
             column.setColumnSize(columnSize);
             column.setNullable(nullable);
             column.setRemark(remarks);
             column.setColumnDefault(columnDef);
+
+            if(dataTypeName.equals("INT"))dataTypeName = "INTEGER";
+            else if(dataTypeName.equals("ENUM"))dataTypeName = "VARCHAR";
+            else if(dataTypeName.equals(("DATETIME")))dataTypeName = "TIMESTAMP";
+            else if(dataTypeName.equals(("TEXT")))dataTypeName = "CLOB";
+            column.setJdbcTypeName(dataTypeName);
 
             columns.add(column);
 
@@ -294,6 +337,21 @@ public class DBTable {
 
     public boolean isHasComposeKey() {
         return hasComposeKey;
+    }
+
+    private String extractPath(String targetProject, String fullyQualifiedPackage){
+        StringBuilder sb = new StringBuilder(targetProject+"\\");
+        StringTokenizer st = new StringTokenizer(fullyQualifiedPackage,".");
+        while (st.hasMoreTokens()) {
+            sb.append(st.nextToken());
+            sb.append(File.separatorChar);
+        }
+
+        File f = new File(sb.toString());
+        if(!f.exists() && !f.mkdirs()){
+            System.out.println("未能成功创建文件夹");
+        }
+        return sb.toString();
     }
 
 

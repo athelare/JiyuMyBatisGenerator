@@ -2,7 +2,7 @@ package com.ljy;
 
 import com.ljy.dbObject.DBTable;
 import com.ljy.pojo.GeneratorConfig;
-import com.ljy.writer.CrudControllerDocumentWriter;
+import com.ljy.writer.ControllerDocumentWriter;
 import com.ljy.writer.EntityOrMapperWriter;
 import com.ljy.writer.MyBatisXMLWriter;
 import freemarker.template.TemplateException;
@@ -19,7 +19,7 @@ import java.util.*;
 public class GeneratorController {
 
     private DatabaseMetaData dbMetaData;
-
+    private String catalog_name;
     private GeneratorConfig config;
 
     private void readGeneratorConfig(String path) throws DocumentException {
@@ -74,6 +74,7 @@ public class GeneratorController {
             Class.forName(config.getJdbcConnection().getDriverClass());
             Connection con = DriverManager.getConnection(config.getJdbcConnection().getConnectionURL(), config.getJdbcConnection().getUserId(), config.getJdbcConnection().getPassword());
             dbMetaData = con.getMetaData();
+            catalog_name = con.getCatalog();
         } catch (ClassNotFoundException | SQLException e) {
             e.printStackTrace();
         }
@@ -85,36 +86,11 @@ public class GeneratorController {
         ResultSet rs = dbMetaData.getTables(catalogName, null, "%", types);
         List<DBTable> tables = new ArrayList<>();
         while (rs.next()) {
-            String catalog = rs.getString("TABLE_CAT"); //数据库名
             String tableName = rs.getString("TABLE_NAME"); // 表名
-            String tableType = rs.getString("TABLE_TYPE"); // 表类型
+            //String tableType = rs.getString("TABLE_TYPE"); // 表类型
             String remarks = rs.getString("REMARKS"); // 表备注
 
-            DBTable dbTable = new DBTable(dbMetaData,catalogName,tableName);
-
-            dbTable.setRemark(remarks);
-            dbTable.setFullyQualifiedEntityPackage(config.getJavaModelGenerator().getTargetPackage());
-            dbTable.setFullyQualifiedMapperPackage(config.getSqlMapGenerator().getTargetPackage());
-            dbTable.setFullyQualifiedDaoPackage(config.getJavaClientGenerator().getTargetPackage());
-
-            if(null == config.getJavaModelGenerator().getTargetProject()){
-                dbTable.setEntityDirPath(this.extractPath("src",dbTable.getFullyQualifiedEntityPackage()));
-            }else{
-                dbTable.setEntityDirPath(this.extractPath(config.getJavaModelGenerator().getTargetProject(),dbTable.getFullyQualifiedEntityPackage()));
-            }
-
-            if(null == config.getSqlMapGenerator().getTargetProject()){
-                dbTable.setMapperDirPath(this.extractPath("src",dbTable.getFullyQualifiedMapperPackage()));
-            }else {
-                dbTable.setMapperDirPath(this.extractPath(config.getSqlMapGenerator().getTargetProject(),dbTable.getFullyQualifiedMapperPackage()));
-            }
-
-            if(null == config.getJavaClientGenerator().getTargetProject()){
-                dbTable.setDaoDirPath(this.extractPath("src",config.getJavaClientGenerator().getTargetPackage()));
-            }else {
-                dbTable.setDaoDirPath(this.extractPath(config.getJavaClientGenerator().getTargetProject(),config.getJavaClientGenerator().getTargetPackage()));
-            }
-
+            DBTable dbTable = new DBTable(config, dbMetaData,catalogName,tableName, remarks);
 
 
             tables.add(dbTable);
@@ -135,7 +111,7 @@ public class GeneratorController {
 
 
         }
-        CrudControllerDocumentWriter.writeControllerClass(
+        ControllerDocumentWriter.writeControllerClass(
                 tables,
                 config.getJavaClientGenerator().getProperties()
                 );
@@ -145,22 +121,7 @@ public class GeneratorController {
         GeneratorController rt = new GeneratorController();
         rt.readGeneratorConfig("src\\main\\resources\\generatorConfig.xml");
         rt.getDatabaseMetaData();
-        rt.getAllTableList("word_liberty");
-    }
-
-    private String extractPath(String targetProject, String fullyQualifiedPackage){
-        StringBuilder sb = new StringBuilder(targetProject+"\\");
-        StringTokenizer st = new StringTokenizer(fullyQualifiedPackage,".");
-        while (st.hasMoreTokens()) {
-            sb.append(st.nextToken());
-            sb.append(File.separatorChar);
-        }
-
-        File f = new File(sb.toString());
-        if(!f.exists() && !f.mkdirs()){
-            System.out.println("未能成功创建文件夹");
-        }
-        return sb.toString();
+        rt.getAllTableList(rt.catalog_name);
     }
 
 }

@@ -8,7 +8,7 @@ public class NameRule {
     static Map<String,String> converter;
 
     static {
-        converter = new HashMap<String, String>();
+        converter = new HashMap<>();
         converter.put("CHAR", "String");
         converter.put("VARCHAR", "String");
         converter.put("LONGVARCHAR", "String");

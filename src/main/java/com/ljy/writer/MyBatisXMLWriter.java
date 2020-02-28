@@ -1,6 +1,5 @@
 package com.ljy.writer;
 
-import com.ljy.dbObject.DBColumn;
 import com.ljy.dbObject.DBTable;
 import com.ljy.util.XMLCodeGen;
 import org.dom4j.Document;
@@ -13,15 +12,12 @@ import org.dom4j.io.XMLWriter;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.util.StringTokenizer;
 
 public class MyBatisXMLWriter {
 
     public static void writeMyBatisXML(DBTable dbTable) throws IOException {
 
-        String fullyQualifiedEntity = dbTable.getFullyQualifiedEntityPackage()+"."+dbTable.getPascalEntityName();
         String fullyQualifiedMapper = dbTable.getFullyQualifiedDaoPackage()+"."+dbTable.getPascalMapperName();
-
 
         //XML文档对象
         Document document = DocumentHelper.createDocument();

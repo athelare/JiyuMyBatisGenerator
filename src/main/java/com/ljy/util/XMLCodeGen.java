@@ -82,10 +82,6 @@ public class XMLCodeGen {
         }
         sb.append("  ");
 
-
-
-
-
         selectByPrimaryKeyCode.setText(sb.toString());
 
         return selectByPrimaryKeyCode;

@@ -1,3 +1,5 @@
+<#-- @ftlvariable name="table" type="com.ljy.dbObject.DBTable" -->
+
 package ${table.fullyQualifiedDaoPackage};
 
 import java.util.List;
@@ -7,9 +9,8 @@ import ${table.fullyQualifiedEntityPackage}.${table.pascalEntityName};
 <#if table.hasComposeKey()>import ${table.fullyQualifiedEntityPackage}.${table.pascalEntityName}PrimaryKey;</#if>
 
 /**
- * ${comment!""}
- * @author ${author!""}
- * @time ${time!""}
+ * ${table.remark!""}
+ * @time ${.now}
  */
 
 @Mapper

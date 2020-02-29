@@ -41,7 +41,7 @@ public class NameRule {
 
         StringBuilder camelName = new StringBuilder(words[0]);
         for (int i = 1; i < words.length; i++) {
-            camelName.append(words[i].substring(0,1).toUpperCase()+words[i].substring(1));
+            camelName.append(words[i].substring(0, 1).toUpperCase()).append(words[i].substring(1));
         }
         return camelName.toString();
     }
@@ -59,6 +59,11 @@ public class NameRule {
         return name+"Entity";
     }
 
+    /**
+     * 根据数据库元数据中查询到的数据库类型找出对应的Java数据类型，如果没有合适的转化，就暂且转化为Object对象
+     * @param jdbcType 数据库类型名称
+     * @return java数据类型名称
+     */
     public static String jdbcType2JavaType(String jdbcType){
         return converter.getOrDefault(jdbcType,"Object");
     }

@@ -16,12 +16,18 @@ import java.io.IOException;
 import java.sql.*;
 import java.util.*;
 
+
 public class GeneratorController {
 
     private DatabaseMetaData dbMetaData;
-    private String catalog_name;
+    private String catalogName;
     private GeneratorConfig config;
 
+    /**
+     * 在generatorConfig.xml文件中读取配置信息
+     * @param path 配置文件的路径
+     * @throws DocumentException xxx
+     */
     private void readGeneratorConfig(String path) throws DocumentException {
         Document document = new SAXReader().read(new File(path));
 
@@ -68,42 +74,61 @@ public class GeneratorController {
 
     }
 
+    /**
+     * 根据config文件的信息连接数据库，并且生成“DatabaseMetadata"变量供
+     */
     private void getDatabaseMetaData(){
 
         try {
             Class.forName(config.getJdbcConnection().getDriverClass());
             Connection con = DriverManager.getConnection(config.getJdbcConnection().getConnectionURL(), config.getJdbcConnection().getUserId(), config.getJdbcConnection().getPassword());
             dbMetaData = con.getMetaData();
-            catalog_name = con.getCatalog();
+            catalogName = con.getCatalog();
         } catch (ClassNotFoundException | SQLException e) {
             e.printStackTrace();
         }
     }
 
-    public void getAllTableList(String catalogName) throws SQLException, IOException, TemplateException {
+    /**
+     * 根据DatabaseMetadata以及catalogName(成员变量）获取指定数据库所有的表格信息
+     * @throws SQLException xxx
+     * @throws IOException xxx
+     * @throws TemplateException xxx
+     */
+    public void getAllTableList() throws SQLException, IOException, TemplateException {
 
         String[] types = { "TABLE" };
         ResultSet rs = dbMetaData.getTables(catalogName, null, "%", types);
         List<DBTable> tables = new ArrayList<>();
         while (rs.next()) {
             String tableName = rs.getString("TABLE_NAME"); // 表名
-            //String tableType = rs.getString("TABLE_TYPE"); // 表类型
             String remarks = rs.getString("REMARKS"); // 表备注
 
             DBTable dbTable = new DBTable(config, dbMetaData,catalogName,tableName, remarks);
 
 
             tables.add(dbTable);
+            //写入MyBatis的XML映射文件
             MyBatisXMLWriter.writeMyBatisXML(dbTable);
+            //根据模板写入Entity文件
             EntityOrMapperWriter.write(
+                    dbTable,
+                    dbTable.getEntityDirPath()+dbTable.getPascalEntityName()+".java",
+                    config.getJavaModelGenerator().getProperties());
+            //根据模板写入DAO文件
+            EntityOrMapperWriter.write(
+                    dbTable,
+                    dbTable.getDaoDirPath()+dbTable.getPascalMapperName()+".java",
+                    config.getJavaClientGenerator().getProperties());
+            /*EntityOrMapperWriter.write(
                     dbTable,
                     config.getJavaClientGenerator().getProperties().get("templateDirectory"),
                     config.getJavaModelGenerator().getProperties().get("templateName"),
                     config.getJavaClientGenerator().getProperties().get("templateName")
-            );
-
+            );*/
+            //处理多主键的情况，按照其他生成软件的方式，将这些复合主键生成一个class
             if(dbTable.hasComposeKey()){
-                EntityOrMapperWriter.write1(
+                EntityOrMapperWriter.write(
                         new DBTable(dbTable),
                         dbTable.getEntityDirPath()+dbTable.getPascalEntityName()+"PrimaryKey.java",
                         config.getJavaModelGenerator().getProperties());
@@ -117,11 +142,19 @@ public class GeneratorController {
                 );
     }
 
+    /**
+     * 程序入口
+     * @param args xxx
+     * @throws SQLException xxx
+     * @throws IOException xxx
+     * @throws TemplateException xxx
+     * @throws DocumentException xxx
+     */
     public static void main(String[]args) throws SQLException, IOException, TemplateException, DocumentException {
         GeneratorController rt = new GeneratorController();
         rt.readGeneratorConfig("src\\main\\resources\\generatorConfig.xml");
         rt.getDatabaseMetaData();
-        rt.getAllTableList(rt.catalog_name);
+        rt.getAllTableList();
     }
 
 }

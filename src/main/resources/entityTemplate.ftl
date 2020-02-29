@@ -4,9 +4,8 @@ package ${table.fullyQualifiedEntityPackage};
 import java.util.List;
 
 /**
- * ${comment!""}
- * @author ${author!""}
- * @time ${time!""}
+ * ${table.remark!""}
+ * @time ${.now}
  */
 
 /**

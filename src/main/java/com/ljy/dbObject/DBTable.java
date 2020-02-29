@@ -32,8 +32,8 @@ public class DBTable {
     private String fullyQualifiedDaoPackage;    //数据访问对象DAO接口
     private String entityDirPath;               //实体类文件夹路径
     private String mapperDirPath;               //XML文件夹路径
-    private String daoDirPath;                  //
-    private String primaryKeyType;
+    private String daoDirPath;                  //DAO文件夹路径
+    private String primaryKeyType;              //主键类型
 
     private List<DBColumn> primaryKey;
     private List<DBColumn> columns;
@@ -151,7 +151,10 @@ public class DBTable {
         }
     }
 
-    //生成PrimaryKey类
+    /**
+     * 根据dbTable中的主键列生成只有主键的对象
+     * @param dbTable
+     */
     public DBTable(DBTable dbTable){
         this.setColumns(dbTable.getPrimaryKey());
         this.setFullyQualifiedEntityPackage(dbTable.getFullyQualifiedEntityPackage());

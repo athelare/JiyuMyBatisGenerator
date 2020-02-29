@@ -1,3 +1,4 @@
+<#-- @ftlvariable name="tables" type="java.util.Collection<com.ljy.dbObject.DBTable>" -->
 # API Document for classroom
 
 

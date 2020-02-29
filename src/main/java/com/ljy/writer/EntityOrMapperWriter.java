@@ -10,7 +10,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class EntityOrMapperWriter {
-    public static void write(
+    /*public static void write(
             DBTable dbTable,
             String templateDirectory,
             String entityTemplateName,
@@ -26,19 +26,16 @@ public class EntityOrMapperWriter {
         Map<String, Object> dataModel = new HashMap<>();
 
         dataModel.put("table",dbTable);
-        dataModel.put("author","Jiyu");
-        dataModel.put("comment","hello");
-        dataModel.put("time","2020-01-19");
 
         entityTemplate.process(dataModel,entityWriter);
         mapperTemplate.process(dataModel,mapperWriter);
 
         entityWriter.close();
         mapperWriter.close();
-    }
+    }*/
 
 
-    public static void write1(
+    public static void write(
             DBTable dbTable,
             String fileName,
             Map<String, String> properties
@@ -51,9 +48,6 @@ public class EntityOrMapperWriter {
         Map<String, Object> dataModel = new HashMap<>();
 
         dataModel.put("table",dbTable);
-        dataModel.put("author","Jiyu");
-        dataModel.put("comment","hello");
-        dataModel.put("time","2020-01-19");
 
         entityTemplate.process(dataModel,entityWriter);
 

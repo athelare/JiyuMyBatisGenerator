@@ -30,9 +30,6 @@ public class ControllerDocumentWriter {
         Map<String, Object> dataModel = new HashMap<>();
 
         dataModel.put("tables",tables);
-        dataModel.put("author","Jiyu");
-        dataModel.put("comment","hello");
-        dataModel.put("time","2020-01-19");
         dataModel.put("urlPrefix",properties.get("urlPrefix"));
 
         controllerTemplate.process(dataModel,writer);

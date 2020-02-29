@@ -1,3 +1,4 @@
+<#-- @ftlvariable name="tables" type="java.util.Collection<com.ljy.dbObject.DBTable>" -->
 // todo package
 <#list tables as table>
 import ${table.fullyQualifiedEntityPackage}.${table.pascalEntityName};

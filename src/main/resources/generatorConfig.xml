@@ -45,8 +45,6 @@
             <property name="controllerTemplateName" value="crudControllerTemplate.ftl"/>
             <property name="urlPrefix" value="/crud"/>
         </javaClientGenerator>
-        
-        
 
 
         <table tableName="表名" domainObjectName="生成实体的类名"/>

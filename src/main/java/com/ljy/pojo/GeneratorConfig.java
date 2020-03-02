@@ -1,6 +1,8 @@
 package com.ljy.pojo;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * reveal and store generatorConfig.xml
@@ -12,12 +14,14 @@ public class GeneratorConfig {
     private JavaClientGenerator javaClientGenerator;
     private JavaModelGenerator javaModelGenerator;
     private SQLMapGenerator sqlMapGenerator;
+    private Map<String, String> tableName2DomainObjectMap;
 
     public GeneratorConfig(){
         jdbcConnection = new JDBCConnection();
         javaClientGenerator = new JavaClientGenerator();
         javaModelGenerator = new JavaModelGenerator();
         sqlMapGenerator = new SQLMapGenerator();
+        tableName2DomainObjectMap = new HashMap<>();
     }
 
     public List<SpecifiedTable> getSpecifiedTables() {
@@ -58,6 +62,14 @@ public class GeneratorConfig {
 
     public void setSqlMapGenerator(SQLMapGenerator sqlMapGenerator) {
         this.sqlMapGenerator = sqlMapGenerator;
+    }
+
+    public Map<String, String> getTableName2DomainObjectMap() {
+        return tableName2DomainObjectMap;
+    }
+
+    public void setTableName2DomainObjectMap(Map<String, String> tableName2DomainObjectMap) {
+        this.tableName2DomainObjectMap = tableName2DomainObjectMap;
     }
 }
 

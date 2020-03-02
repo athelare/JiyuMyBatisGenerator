@@ -2,6 +2,7 @@ package com.ljy;
 
 import com.ljy.dbObject.DBTable;
 import com.ljy.pojo.GeneratorConfig;
+import com.ljy.pojo.SpecifiedTable;
 import com.ljy.writer.ControllerDocumentWriter;
 import com.ljy.writer.EntityOrMapperWriter;
 import com.ljy.writer.MyBatisXMLWriter;
@@ -33,6 +34,7 @@ public class GeneratorController {
 
         config = new GeneratorConfig();
         Iterator<Element> extraProperties;
+        Iterator<Element> specifiedTable;
         Map<String,String> propertyPairs;
 
         Element context = document.getRootElement().element("context");
@@ -40,6 +42,7 @@ public class GeneratorController {
         Element javaModelGenerator = context.element("javaModelGenerator");
         Element javaClientGenerator = context.element("javaClientGenerator");
         Element sqlMapGenerator = context.element("sqlMapGenerator");
+        specifiedTable = context.elementIterator("table");
 
 
         config.getJdbcConnection().setDriverClass(jdbcConnection.attributeValue("driverClass"));
@@ -56,6 +59,13 @@ public class GeneratorController {
             propertyPairs.put(tmp.attributeValue("name"),tmp.attributeValue("value"));
         }
         config.getJavaModelGenerator().setProperties(propertyPairs);
+
+        while(specifiedTable.hasNext()){
+            Element tb = specifiedTable.next();
+            config.getTableName2DomainObjectMap()
+                    .put(tb.attributeValue("tableName"),tb.attributeValue("domainObjectName"));
+
+        }
 
 
         config.getJavaClientGenerator().setTargetPackage(javaClientGenerator.attributeValue("targetPackage"));

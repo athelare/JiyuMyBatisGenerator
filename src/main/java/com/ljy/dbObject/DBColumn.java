@@ -25,7 +25,7 @@ public class DBColumn {
     public void setColumnName(String columnName) {
         this.columnName = columnName;
         this.camelName = NameRule.Underline2Camel(columnName);
-        this.pascalName = NameRule.Underline2Pascal(columnName);
+        this.pascalName = NameRule.Camel2Pascal(camelName);
     }
 
     public int getColumnSize() {

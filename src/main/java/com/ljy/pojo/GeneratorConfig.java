@@ -1,8 +1,6 @@
 package com.ljy.pojo;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * reveal and store generatorConfig.xml

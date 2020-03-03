@@ -46,9 +46,12 @@ public class NameRule {
         return camelName.toString();
     }
 
-    public static String Underline2Pascal(String dbName){
-        String camelName = Underline2Camel(dbName);
+    public static String Camel2Pascal(String camelName){
         return camelName.substring(0,1).toUpperCase()+camelName.substring(1);
+    }
+
+    public static String Pascal2Camel(String pascalName){
+        return pascalName.substring(0,1).toLowerCase()+pascalName.substring(1);
     }
 
     public static String appendMapper(String name){

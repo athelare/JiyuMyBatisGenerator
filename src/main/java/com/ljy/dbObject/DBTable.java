@@ -41,12 +41,23 @@ public class DBTable {
     public DBTable(GeneratorConfig config, DatabaseMetaData dbMetaData, String catalogName, String tableName, String remark) throws SQLException {
 
         this.setTableName(tableName);
-        this.setCamelName(NameRule.Underline2Camel(tableName));
-        this.setCamelEntityName(NameRule.appendEntity(this.getCamelName()));
-        this.setCamelMapperName(NameRule.appendMapper(this.getCamelName()));
-        this.setPascalName(NameRule.Underline2Pascal(tableName));
-        this.setPascalEntityName(NameRule.appendEntity(this.getPascalName()));
-        this.setPascalMapperName(NameRule.appendMapper(this.getPascalName()));
+        if (config.getTableName2DomainObjectMap().containsKey(tableName)){
+            this.setPascalName(config.getTableName2DomainObjectMap().get(tableName));
+            this.setPascalEntityName(pascalName);
+            this.setPascalMapperName(NameRule.appendMapper(pascalName));
+            this.setCamelName(NameRule.Pascal2Camel(pascalName));
+            this.setCamelEntityName(camelName);
+            this.setCamelMapperName(NameRule.appendMapper(camelName));
+
+        }else {
+            this.setCamelName(NameRule.Underline2Camel(tableName));
+            this.setCamelEntityName(NameRule.appendEntity(this.getCamelName()));
+            this.setCamelMapperName(NameRule.appendMapper(this.getCamelName()));
+            this.setPascalName(NameRule.Camel2Pascal(this.getCamelName()));
+            this.setPascalEntityName(NameRule.appendEntity(this.getPascalName()));
+            this.setPascalMapperName(NameRule.appendMapper(this.getPascalName()));
+        }
+
         this.setRemark(remark);
         this.setFullyQualifiedEntityPackage(config.getJavaModelGenerator().getTargetPackage());
         this.setFullyQualifiedMapperPackage(config.getSqlMapGenerator().getTargetPackage());

@@ -1,0 +1,32 @@
+<idea-plugin>
+  <id>com.your.company.unique.plugin.id</id>
+  <name>JiyuMyBatisGeneratorPlugin</name>
+  <version>1.0</version>
+  <vendor email="lijiyu0219@126.com" url="no url">Self</vendor>
+
+  <description>A project that could generate mybatis configuration files with XML</description>
+
+  <change-notes>
+    Was initialy not a plugin project but then be changed into it.
+  </change-notes>
+
+  <!-- please see http://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/build_number_ranges.html for description -->
+  <idea-version since-build="173.0"/>
+
+  <!-- please see http://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/plugin_compatibility.html
+       on how to target different products -->
+  <depends>com.intellij.modules.platform</depends>
+
+  <extensions defaultExtensionNs="com.intellij">
+    <!-- Add your extensions here -->
+  </extensions>
+
+  <actions>
+    <!-- Add your actions here -->
+    <action id="JiyuGeneratorFromFile" class="JiyuGeneratorPopup" text="JiyuGenerator"
+            description="Begin to generate from selected file.">
+      <add-to-group group-id="ProjectViewPopupMenu" anchor="last"/>
+    </action>
+  </actions>
+
+</idea-plugin>

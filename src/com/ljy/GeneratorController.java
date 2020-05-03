@@ -140,7 +140,7 @@ public class GeneratorController {
             //处理多主键的情况，按照其他生成软件的方式，将这些复合主键生成一个class
             if(table.hasComposeKey()){
                 EntityOrMapperWriter.write(
-                        new DBTable(table),
+                        table.getPrimaryKeyClass(),
                         table.getEntityDirPath()+table.getPascalEntityName()+"PrimaryKey.java"
                 );
             }

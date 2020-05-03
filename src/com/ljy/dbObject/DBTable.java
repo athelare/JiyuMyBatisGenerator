@@ -38,6 +38,7 @@ public class DBTable {
     private List<DBColumn> primaryKey;
     private List<DBColumn> columns;
 
+    public DBTable(){}
     public DBTable(GeneratorConfig config, DatabaseMetaData dbMetaData, String catalogName, String tableName, String remark) throws SQLException {
 
         this.setTableName(tableName);
@@ -172,15 +173,14 @@ public class DBTable {
         }
     }
 
-    /**
-     * 根据dbTable中的主键列生成只有主键的对象
-     * @param dbTable dbtable
-     */
-    public DBTable(DBTable dbTable){
-        this.setColumns(dbTable.getPrimaryKey());
-        this.setFullyQualifiedEntityPackage(dbTable.getFullyQualifiedEntityPackage());
-        this.setRemark("主键类");
-        this.setPascalEntityName(dbTable.getPascalEntityName()+"PrimaryKey");
+
+    public DBTable getPrimaryKeyClass(){
+        DBTable tb = new DBTable();
+        tb.setColumns(this.getPrimaryKey());
+        tb.setFullyQualifiedEntityPackage(this.getFullyQualifiedEntityPackage());
+        tb.setRemark("主键类");
+        tb.setPascalEntityName(this.getPascalEntityName()+"PrimaryKey");
+        return tb;
     }
 
     public String getTableName() {

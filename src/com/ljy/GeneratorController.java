@@ -2,7 +2,6 @@ package com.ljy;
 
 import com.ljy.dbObject.DBTable;
 import com.ljy.pojo.GeneratorConfig;
-import com.ljy.pojo.SpecifiedTable;
 import com.ljy.writer.ControllerDocumentWriter;
 import com.ljy.writer.EntityOrMapperWriter;
 import com.ljy.writer.MyBatisXMLWriter;
@@ -19,20 +18,17 @@ import java.util.*;
 
 
 public class GeneratorController {
-
-    private DatabaseMetaData dbMetaData;
     private String catalogName;
-    private GeneratorConfig config;
 
     /**
      * 在generatorConfig.xml文件中读取配置信息
      * @param path 配置文件路径
      * @throws DocumentException xxx
      */
-    private void readGeneratorConfig(String path) throws DocumentException {
+    private GeneratorConfig readGeneratorConfig(String path) throws DocumentException {
         Document document = new SAXReader().read(new File(path));
 
-        config = new GeneratorConfig();
+        GeneratorConfig config = new GeneratorConfig();
         Iterator<Element> extraProperties;
         Iterator<Element> specifiedTable;
         Map<String,String> propertyPairs;
@@ -82,104 +78,105 @@ public class GeneratorController {
         config.getSqlMapGenerator().setTargetPackage(sqlMapGenerator.attributeValue("targetPackage"));
         config.getSqlMapGenerator().setTargetProject(sqlMapGenerator.attributeValue("targetProject"));
 
+        return config;
+
     }
 
     /**
      * 根据config文件的信息连接数据库，并且生成“DatabaseMetadata"变量供
      */
-    private void getDatabaseMetaData(){
+    private DatabaseMetaData getDatabaseMetaData(GeneratorConfig config){
 
         try {
             Class.forName(config.getJdbcConnection().getDriverClass());
-            Connection con = DriverManager.getConnection(config.getJdbcConnection().getConnectionURL(), config.getJdbcConnection().getUserId(), config.getJdbcConnection().getPassword());
-            dbMetaData = con.getMetaData();
+            Connection con = DriverManager.getConnection(
+                    config.getJdbcConnection().getConnectionURL(),
+                    config.getJdbcConnection().getUserId(),
+                    config.getJdbcConnection().getPassword()
+            );
             catalogName = con.getCatalog();
+            return con.getMetaData();
         } catch (ClassNotFoundException | SQLException e) {
             e.printStackTrace();
+            return null;
         }
     }
 
     /**
      * 根据DatabaseMetadata以及catalogName(成员变量）获取指定数据库所有的表格信息
+     * @param config 用户配置信息
+     * @param metaData 数据库元数据
+     * @return 所有数据库表
      * @throws SQLException xxx
-     * @throws IOException xxx
-     * @throws TemplateException xxx
      */
-    public void getAllTableList() throws SQLException, IOException, TemplateException {
+    public List<DBTable> retrieveDatabaseMetadataInformation(GeneratorConfig config, DatabaseMetaData metaData) throws SQLException {
 
         String[] types = { "TABLE" };
-        ResultSet rs = dbMetaData.getTables(catalogName, null, "%", types);
+        ResultSet rs = metaData.getTables(catalogName, null, "%", types);
         List<DBTable> tables = new ArrayList<>();
         while (rs.next()) {
             String tableName = rs.getString("TABLE_NAME"); // 表名
             String remarks = rs.getString("REMARKS"); // 表备注
-
-            DBTable dbTable = new DBTable(config, dbMetaData,catalogName,tableName, remarks);
-
-
+            DBTable dbTable = new DBTable(config, metaData,catalogName,tableName, remarks);
             tables.add(dbTable);
-            //写入MyBatis的XML映射文件
-            MyBatisXMLWriter.writeMyBatisXML(dbTable);
-            //根据模板写入Entity文件
+        }
+        return tables;
+    }
+
+    private void outputFilesFromMetaInfo(GeneratorConfig config, List<DBTable> tables) throws IOException, TemplateException {
+        for(DBTable table:tables){
+            //生成XML配置文件
+            MyBatisXMLWriter.writeMyBatisXML(table);
+            //生成实体类
             EntityOrMapperWriter.write(
-                    dbTable,
-                    dbTable.getEntityDirPath()+dbTable.getPascalEntityName()+".java",
-                    config.getJavaModelGenerator().getProperties());
-            //根据模板写入DAO文件
+                    table,
+                    table.getEntityDirPath()+table.getPascalEntityName()+".java"
+            );
+            //生成DAO接口
             EntityOrMapperWriter.write(
-                    dbTable,
-                    dbTable.getDaoDirPath()+dbTable.getPascalMapperName()+".java",
-                    config.getJavaClientGenerator().getProperties());
-            /*EntityOrMapperWriter.write(
-                    dbTable,
-                    config.getJavaClientGenerator().getProperties().get("templateDirectory"),
-                    config.getJavaModelGenerator().getProperties().get("templateName"),
-                    config.getJavaClientGenerator().getProperties().get("templateName")
-            );*/
+                    table,
+                    table.getDaoDirPath()+table.getPascalMapperName()+".java"
+            );
             //处理多主键的情况，按照其他生成软件的方式，将这些复合主键生成一个class
-            if(dbTable.hasComposeKey()){
+            if(table.hasComposeKey()){
                 EntityOrMapperWriter.write(
-                        new DBTable(dbTable),
-                        dbTable.getEntityDirPath()+dbTable.getPascalEntityName()+"PrimaryKey.java",
-                        config.getJavaModelGenerator().getProperties());
+                        new DBTable(table),
+                        table.getEntityDirPath()+table.getPascalEntityName()+"PrimaryKey.java"
+                );
             }
-
-
         }
         ControllerDocumentWriter.writeControllerClass(
                 tables,
                 config.getJavaClientGenerator().getProperties()
-                );
+        );
     }
 
     /**
-     * 程序入口
+     * 程序测试入口
      * @param args xxx
-     * @throws SQLException xxx
-     * @throws IOException xxx
-     * @throws TemplateException xxx
-     * @throws DocumentException xxx
      */
-    public static void main(String[]args) throws SQLException, IOException, TemplateException, DocumentException {
-        GeneratorController rt = new GeneratorController();
-        rt.readGeneratorConfig("src\\main\\resources\\generatorConfig.xml");
-        rt.getDatabaseMetaData();
-        rt.getAllTableList();
+    public static void main(String[]args) {
+        GenerateFromFile("src\\main\\resources\\generatorConfig.xml");
     }
 
+    /**
+     * 插件入口
+     * @param configFile 配置文件的地址
+     */
     public static void GenerateFromFile(String configFile){
-        GeneratorController rt = new GeneratorController();
-        try {
-            rt.readGeneratorConfig(configFile);
-        } catch (DocumentException e) {
-            e.printStackTrace();
-        }
-
-        rt.getDatabaseMetaData();
+        GeneratorConfig config;
+        List<DBTable> tables;
+        DatabaseMetaData metaData;
+        GeneratorController controller;
 
         try {
-            rt.getAllTableList();
-        } catch (SQLException | IOException | TemplateException e) {
+            controller = new GeneratorController();
+            config = controller.readGeneratorConfig(configFile);
+            metaData = controller.getDatabaseMetaData(config);
+            assert metaData != null;
+            tables = controller.retrieveDatabaseMetadataInformation(config, metaData);
+            controller.outputFilesFromMetaInfo(config,tables);
+        } catch (DocumentException | SQLException | TemplateException | IOException e) {
             e.printStackTrace();
         }
     }

@@ -123,10 +123,20 @@ public class DBTable {
             column.setRemark(remarks);
             column.setColumnDefault(columnDef);
 
-            if(dataTypeName.equals("INT"))dataTypeName = "INTEGER";
-            else if(dataTypeName.equals("ENUM"))dataTypeName = "VARCHAR";
-            else if(dataTypeName.equals(("DATETIME")))dataTypeName = "TIMESTAMP";
-            else if(dataTypeName.equals(("TEXT")))dataTypeName = "CLOB";
+            switch (dataTypeName) {
+                case "INT":
+                    dataTypeName = "INTEGER";
+                    break;
+                case "ENUM":
+                    dataTypeName = "VARCHAR";
+                    break;
+                case "DATETIME":
+                    dataTypeName = "TIMESTAMP";
+                    break;
+                case "TEXT":
+                    dataTypeName = "CLOB";
+                    break;
+            }
             column.setJdbcTypeName(dataTypeName);
 
             columns.add(column);
@@ -164,7 +174,7 @@ public class DBTable {
 
     /**
      * 根据dbTable中的主键列生成只有主键的对象
-     * @param dbTable
+     * @param dbTable dbtable
      */
     public DBTable(DBTable dbTable){
         this.setColumns(dbTable.getPrimaryKey());
